@@ -16,13 +16,18 @@ class FreeCamera(object):
     y = 0
     z = 0
     
-    isMovingForward= False
-    isMovingBackward= False
-    isStrafingLeft= False
-    isStrafingRight= False
+    #Refactor: Que valor é esse? Tá meio estranho, precisa fazer uma ideia de coordenadas do mundo
+    zSpeed = 0.0005
+    strafeSpeed = 0.0005
     
-    def __init__(self, eventDispatcher):
+    isMovingForward = False
+    isMovingBackward = False
+    isStrafingLeft = False
+    isStrafingRight = False
+    
+    def __init__(self, eventDispatcher, gameTick):
         eventDispatcher.RegisterListener(self)
+        self.gameTick = gameTick
         
     def Notify(self, event):
         if isinstance(event, KeyboardEvent):
@@ -30,26 +35,26 @@ class FreeCamera(object):
             isStarting = event.type == pygame.KEYDOWN
              
             if event.key == pygame.K_UP:
-                self.isMovingForward= isStarting 
+                self.isMovingForward = isStarting 
             if event.key == pygame.K_DOWN:
-                self.isMovingBackward= isStarting
+                self.isMovingBackward = isStarting
                 
             if event.key == pygame.K_LEFT:
-                self.isStrafingLeft= isStarting
+                self.isStrafingLeft = isStarting
             if event.key == pygame.K_RIGHT:
-                self.isStrafingRight= isStarting
+                self.isStrafingRight = isStarting
             
     def Render(self):
         if self.isMovingForward:
-            self.z += 0.01
+            self.z += self.gameTick.GetFps() * self.zSpeed
 
         if self.isMovingBackward:
-            self.z -= 0.01
+            self.z -= self.gameTick.GetFps() * self.zSpeed
             
         if self.isStrafingLeft:
-            self.x += 0.01
+            self.x += self.gameTick.GetFps() * self.strafeSpeed
             
         if self.isStrafingRight:
-            self.x -= 0.01
+            self.x -= self.gameTick.GetFps() * self.strafeSpeed
 
         glTranslatef(self.x, self.y, self.z)

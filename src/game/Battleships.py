@@ -9,6 +9,61 @@ from gui.Camera import FreeCamera
 from gui.MainWindow import *
 from pygame.locals import *
 import pygame
+import time
+
+class Fps():
+    
+    fps = 120
+    
+    def __init__(self):
+        self.accumulatedTime = 0
+        self.frames = 0
+        self.timeOnCurrentFrame = 0
+        self.time = time.time()
+    
+    def Update(self):
+        previousTime = self.time
+        self.time = time.time()
+        self.frames += 1
+        
+        difference = self.time - previousTime
+        self.timeOnCurrentFrame = difference
+        self.accumulatedTime += difference
+        if self.accumulatedTime >= 1:
+            self.fps = self.frames / self.accumulatedTime
+            self.frames = 0
+            self.accumulatedTime = 0
+    
+    def GetFps(self):
+        return self.fps
+    
+    def GetCurrentFrameTime(self):
+        return self.timeOnCurrentFrame
+    
+class GameTicks():
+    MAX_GAME_TICKS = 120
+    MAX_TIME_PER_FRAME = 1000 / MAX_GAME_TICKS 
+    
+    gameTick = 0
+    
+    def __init__(self, fps):
+        self.fps = fps
+        
+    def Update(self):
+        self.fps.Update()
+        
+        self.gameTick += 1
+        
+        currentFrameTime = self.fps.GetCurrentFrameTime()
+        if currentFrameTime < self.MAX_TIME_PER_FRAME:
+            timeToSleepInMs = self.MAX_TIME_PER_FRAME - currentFrameTime
+            time.sleep(timeToSleepInMs / 1000)
+    
+    def GetFps(self):
+        return self.fps.GetFps()
+    
+    def GetTick(self):
+        return self.gameTick
 
 class Battleships(object):
     isFinished = False
@@ -18,8 +73,10 @@ class Battleships(object):
         self.eventManager = EventManager()
         
         self.view = MainWindow(pygame)
-        
-        camera = FreeCamera(self.eventManager)
+
+        self.gameTicks = GameTicks(Fps())
+                
+        camera = FreeCamera(self.eventManager, self.gameTicks)
         self.view.AddCamera(camera)
         
     def handleEvent(self, event):
@@ -34,4 +91,7 @@ class Battleships(object):
             
             self.handleEvent(event)
             
+            self.view.ShowFps(self.gameTicks.GetFps())
             self.view.Render()
+            
+            self.gameTicks.Update()
