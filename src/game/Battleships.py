@@ -13,7 +13,7 @@ import time
 
 class Fps():
     
-    fps = 120
+    fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the fps 
     
     def __init__(self):
         self.accumulatedTime = 0
@@ -42,12 +42,15 @@ class Fps():
     
 class GameTicks():
     MAX_GAME_TICKS = 120
-    MAX_TIME_PER_FRAME = 1000 / MAX_GAME_TICKS 
     
     gameTick = 0
     
     def __init__(self, fps):
         self.fps = fps
+        self.calculate()
+        
+    def calculate(self):
+        self.MAX_TIME_PER_FRAME = 1000 / self.MAX_GAME_TICKS
         
     def Update(self):
         self.fps.Update()

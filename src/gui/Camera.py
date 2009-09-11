@@ -16,9 +16,9 @@ class FreeCamera(object):
     y = 0
     z = 0
     
-    #Refactor: Que valor é esse? Tá meio estranho, precisa fazer uma ideia de coordenadas do mundo
-    zSpeed = 0.0005
-    strafeSpeed = 0.0005
+    #Refactor: Should be in World coordinates. This value doesnt say much...
+    zSpeed = 10
+    strafeSpeed = 5
     
     isMovingForward = False
     isMovingBackward = False
@@ -43,18 +43,28 @@ class FreeCamera(object):
                 self.isStrafingLeft = isStarting
             if event.key == pygame.K_RIGHT:
                 self.isStrafingRight = isStarting
+                
+            if event.key == pygame.K_F1:
+                self.gameTick.MAX_GAME_TICKS += 1
+                self.gameTick.calculate()
+            if event.key == pygame.K_F2:
+                self.gameTick.MAX_GAME_TICKS -= 1
+                self.gameTick.calculate()
             
     def Render(self):
         if self.isMovingForward:
-            self.z += self.gameTick.GetFps() * self.zSpeed
+            self.z += self.normalizeValue(self.gameTick.GetFps(), self.zSpeed)
 
         if self.isMovingBackward:
-            self.z -= self.gameTick.GetFps() * self.zSpeed
+            self.z -= self.normalizeValue(self.gameTick.GetFps(), self.zSpeed)
             
         if self.isStrafingLeft:
-            self.x += self.gameTick.GetFps() * self.strafeSpeed
+            self.x += self.normalizeValue(self.gameTick.GetFps(), self.strafeSpeed)
             
         if self.isStrafingRight:
-            self.x -= self.gameTick.GetFps() * self.strafeSpeed
+            self.x -= self.normalizeValue(self.gameTick.GetFps(), self.strafeSpeed)
 
         glTranslatef(self.x, self.y, self.z)
+
+    def normalizeValue(self, fps, speed):
+        return speed / fps
