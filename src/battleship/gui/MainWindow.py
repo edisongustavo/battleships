@@ -43,7 +43,7 @@ class MainWindow():
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     
     def ShowFps(self, fps):
-        self.display.set_caption("Fps: {0}".format(fps))
+        pass #self.display.set_caption("Fps: {0}".format(fps))
         
     def Render(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
