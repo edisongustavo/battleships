@@ -34,8 +34,10 @@ class RemoteGameTest(trialunit.TestCase):
         self.board.setBoatPosition(Position(1,1))
         d = self.ref.callRemote("hasBoatsAlive")
         d.addCallback(lambda hasBoats: self.failUnless(hasBoats is True))
-
-        self.ref.callRemote("hitTarget", 1, 1)
+        
+        d = self.ref.callRemote("hitTarget", 1, 1)
+        d.addCallback(lambda hitted: self.failUnless(hitted is True, "Hit failed"))
+        
         d = self.ref.callRemote("hasBoatsAlive")
         d.addCallback(lambda hasBoats: self.failUnless(hasBoats is False, "Couldn' hit target remotely"))
         return d
