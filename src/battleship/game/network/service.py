@@ -26,11 +26,11 @@ class RemoteGame(pb.Root, pb.Referenceable):
     
     # Remote Methods to be accessed during game
     def remote_hitTarget(self, row, column):
-        print "hit target called"
+        print("hit target called")
         return self.hitTarget(Position(row, column))
     
     def remote_hasBoatsAlive(self): 
-        print "has boats called"
+        print("has boats called")
         return self.hasBoatsAlive()
     
 
@@ -38,27 +38,27 @@ class RemoteGame(pb.Root, pb.Referenceable):
 class GameServer(threading.Thread):      
     def run(self):
         board = Board(10, 10)
-        board.setBoatPosition(Position(1,1))
+        board.setBoatPosition(Position(1, 1))
         reactor.listenTCP(8789, pb.PBServerFactory(RemoteGame(board)))
-        print "Running server..."
-        installSignalHandlers=0
+        print("Running server...")
+        installSignalHandlers = 0
         reactor.run(installSignalHandlers)
         
         
 class GameClient(threading.Thread):
     def run(self):
-        installSignalHandlers=0
+        installSignalHandlers = 0
         reactor.run(installSignalHandlers)
         
     def connect(self, address, port):
         self.connected = False
         clientFactory = pb.PBClientFactory()
-        reactor.connectTCP(address, port,clientFactory)
+        reactor.connectTCP(address, port, clientFactory)
         d = clientFactory.getRootObject()
         def gotRoot(ref):
             self.ref = ref
             self.connected = True
-            print "connected!"
+            print("connected!")
         d.addCallback(gotRoot)
         return self
     

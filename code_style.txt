@@ -1,0 +1,3 @@
+Code style guide:
+
+First idea: use google styleguide (http://google-styleguide.googlecode.com/svn/trunk/pyguide.html)
