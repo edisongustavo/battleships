@@ -3,13 +3,13 @@ Created on 09/09/2009
 
 @author: emuenz
 '''
-from MVC.EventManager import EventManager
-from events.keyboard import KeyboardEvent
 from gui.Camera import FreeCamera
 from gui.MainWindow import *
 from pygame.locals import *
 import pygame
 import time
+from events.EventManager import *
+from events.keyboard import * 
 
 class Fps():
     

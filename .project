@@ -3,7 +3,6 @@
 	<name>battleships</name>
 	<comment></comment>
 	<projects>
-		<project>firstTutorial</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
