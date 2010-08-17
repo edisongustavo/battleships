@@ -7,34 +7,42 @@ from OpenGL.GL import *
 import pygame
 
 class Board(object):
-    xRotationAngle = yRotationAngle = zRotationAngle = 0
+    class RotationAngles:
+        """ Helper class for rotations """
+        def __init__(self):
+            self.x = self.y = self.z = 0
+            
+        def rotate(self):
+            glRotatef(self.x, 1, 0, 0)
+            glRotatef(self.y, 0, 1, 0)
+            glRotatef(self.z, 0, 0, 1)
+
     def __init__(self):
-        self.loadTexture()
-        pass;
+        self.rotation = self.RotationAngles()
+        
+        self._load_texture()
     
-    def loadTexture(self):
+    def _load_texture(self):
         file = 'data/textures/water.jpg'
-        textureSurface = pygame.image.load(file)
-        textureBuffer = pygame.image.tostring(textureSurface, 'RGBX', 1)
+        image = pygame.image.load(file)
+        buffer = pygame.image.tostring(image, 'RGBX', 1)
         
         self.texture = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, int(self.texture))
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSurface.get_width(), textureSurface.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureBuffer)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.get_width(), image.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     
-    def Render(self):
-        self.xRotationAngle += 0.1
-        self.yRotationAngle += 0.15
-        self.zRotationAngle += 0.25
+    def render(self):
+        self.rotation.x += 0.1
+        self.rotation.y += 0.15
+        self.rotation.z += 0.25
         
-        glRotatef(self.xRotationAngle, 1, 0, 0)
-        glRotatef(self.yRotationAngle, 0, 1, 0)
-        glRotatef(self.zRotationAngle, 0, 0, 1)
+        self.rotation.rotate()
         
         glBindTexture(GL_TEXTURE_2D, int(self.texture))
         glBegin(GL_QUADS)
-        # Front Face
+
         # Front Face
         glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, 1.0)
         glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, 1.0)

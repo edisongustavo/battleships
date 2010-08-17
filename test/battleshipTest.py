@@ -4,7 +4,7 @@ Created on Jan 21, 2010
 @author: victorhg
 '''
 import unittest
-from battleship.game.model import Board, Position
+from game.model import Board, Position
 
 class Test(unittest.TestCase):
 

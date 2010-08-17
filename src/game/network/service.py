@@ -2,13 +2,13 @@ import threading
 from twisted.spread import pb
 from twisted.internet import reactor
 from zope.interface import Interface, implements
-from battleship.game.model import Position, Board
+from game.model import Position, Board
 from twisted.python import util
 
 class GameService(Interface):
-    def hitTarget(position):
+    def hitTarget(self, position):
         """Hits Target"""
-    def hasBoatsAlive():
+    def hasBoatsAlive(self):
         """Returns wheather there are still boats lefting"""
  
 

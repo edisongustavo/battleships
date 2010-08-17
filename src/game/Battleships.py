@@ -3,98 +3,96 @@ Created on 09/09/2009
 
 @author: emuenz
 '''
-from gui.Camera import FreeCamera
-from gui.MainWindow import *
 from pygame.locals import *
+import gui.camera
+import gui.windows
 import pygame
 import time
-from events.EventManager import *
-from events.keyboard import * 
+from game import events
 
-class Fps():
+class Fps(object):
+    """Class to calculate the FPS that the game is running """
     
-    fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the fps 
+    _fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the _fps 
     
     def __init__(self):
-        self.accumulatedTime = 0
+        self.accumulated_time = 0
         self.frames = 0
-        self.timeOnCurrentFrame = 0
+        self._time_on_current_frame = 0
         self.time = time.time()
     
-    def Update(self):
-        previousTime = self.time
+    def update(self):
+        previous_time = self.time
         self.time = time.time()
         self.frames += 1
         
-        difference = self.time - previousTime
-        self.timeOnCurrentFrame = difference
-        self.accumulatedTime += difference
-        if self.accumulatedTime >= 1:
-            self.fps = self.frames / self.accumulatedTime
+        difference = self.time - previous_time
+        self._time_on_current_frame = difference
+        self.accumulated_time += difference
+        if self.accumulated_time >= 1:
+            self._fps = self.frames / self.accumulated_time
             self.frames = 0
-            self.accumulatedTime = 0
+            self.accumulated_time = 0
     
-    def GetFps(self):
-        return self.fps
-    
-    def GetCurrentFrameTime(self):
-        return self.timeOnCurrentFrame
-    
-class GameTicks():
+class GameTicks(object):
+    """ Class the handle the current tick of the game """
     MAX_GAME_TICKS = 120
     
-    gameTick = 0
-    
     def __init__(self, fps):
-        self.fps = fps
-        self.calculate()
+        self._game_tick = 0
+        self._fps = fps
+        self._calculate()
         
-    def calculate(self):
-        self.MAX_TIME_PER_FRAME = 1000 / self.MAX_GAME_TICKS
+    def _calculate(self):
+        self.MAX_FPS = 1000 / self.MAX_GAME_TICKS
         
-    def Update(self):
-        self.fps.Update()
+    def update(self):
+        self._fps.update()
+        self._game_tick += 1
         
-        self.gameTick += 1
-        
-        currentFrameTime = self.fps.GetCurrentFrameTime()
-        if currentFrameTime < self.MAX_TIME_PER_FRAME:
-            timeToSleepInMs = self.MAX_TIME_PER_FRAME - currentFrameTime
-            time.sleep(timeToSleepInMs / 1000)
+        #HACK: remove this sleep thing, it is here only for testing
+        current_frame_time = self._fps._time_on_current_frame
+        if current_frame_time < self.MAX_FPS:
+            sleep_time_inMS = self.MAX_FPS - current_frame_time
+            time.sleep(sleep_time_inMS / 1000)
     
-    def GetFps(self):
-        return self.fps.GetFps()
+    @property
+    def tick(self):
+        return self._game_tick
     
-    def GetTick(self):
-        return self.gameTick
+    @property
+    def fps(self):
+        #HACK [edison]: must remove this, should not rely on this kind of behaviour
+        return self._fps._fps
 
 class Battleships(object):
-    isFinished = False
+    """ The main class of the game. It glues everything together """
     def __init__(self):
+        self.is_finished = False
+        
         pygame.init()
         
-        self.eventManager = EventManager()
+        self._event_manager = events.EventManager()
+        self._fps = Fps()
+        self._ticks = GameTicks(self._fps)
         
-        self.view = MainWindow(pygame)
-
-        self.gameTicks = GameTicks(Fps())
-                
-        camera = FreeCamera(self.eventManager, self.gameTicks)
-        self.view.AddCamera(camera)
+        camera = gui.camera.FreeCamera(self._event_manager, self._ticks)
+        self._view = gui.windows.MainWindow(camera)
+        self._view.add_object(gui.objects.Board())
         
     def handleEvent(self, event):
         if event.type == KEYDOWN or event.type == KEYUP:
-            self.eventManager.Post(KeyboardEvent(event.type, event.key))
+            self._event_manager.Post(events.KeyboardEvent(event.type, event.key))
 
-    def mainLoop(self):
-        while not self.isFinished:
+    def main_loop(self):
+        while not self.is_finished:
             event = pygame.event.poll()
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 break
             
             self.handleEvent(event)
             
-            self.view.ShowFps(self.gameTicks.GetFps())
-            self.view.Render()
+            self._view.show_fps(self._fps._fps)
+            self._view.render()
             
-            self.gameTicks.Update()
+            self._ticks.update()
