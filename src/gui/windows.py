@@ -11,19 +11,19 @@ import pygame
 class MainWindow():
         
     def __init__(self, camera):
-        self._objects = []
-        self._camera = camera
+        self.__objects = []
+        self.__camera = camera
 
-        self._pygame_display = pygame.display;
-        self._pygame_display.set_mode((640, 480), pygame.locals.OPENGL | pygame.locals.DOUBLEBUF)
+        self.__pygame_display = pygame.display;
+        self.__pygame_display.set_mode((640, 480), pygame.locals.OPENGL | pygame.locals.DOUBLEBUF)
         
-        self._window_resize((640, 480))
-        self._init_openGL()
+        self.__window_resize((640, 480))
+        self.__init_openGL()
         
     def add_object(self, object):
-        self._objects.append(gui.objects.Board())
+        self.__objects.append(gui.objects.Board())
         
-    def _window_resize(self, (width, height)):
+    def __window_resize(self, (width, height)):
         glViewport(0, 0, width, height)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
@@ -31,7 +31,7 @@ class MainWindow():
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         
-    def _init_openGL(self):
+    def __init_openGL(self):
         glShadeModel(GL_SMOOTH)
         glClearColor(0, 0, 0, 0)
         glClearDepth(1)
@@ -41,15 +41,15 @@ class MainWindow():
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     
     def show_fps(self, fps):
-        pass #self._pygame_display.set_caption("Fps: {0}".format(fps))
+        pass #self.__pygame_display.set_caption("Fps: {0}".format(fps))
         
     def render(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         
-        self._camera.render()
+        self.__camera.render()
         
-        for object in self._objects:
+        for object in self.__objects:
             object.render()
         
-        self._pygame_display.flip()
+        self.__pygame_display.flip()

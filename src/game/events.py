@@ -8,8 +8,8 @@ from weakref import WeakKeyDictionary
 class Controller:
     
     def __init__(self, eventManager):
-        self._event_manager = eventManager;
-        self._event_manager.registerListener(self)
+        self.__event_manager = eventManager;
+        self.__event_manager.registerListener(self)
     
     def notify(self):
         print("notify method")

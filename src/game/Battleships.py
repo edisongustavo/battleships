@@ -13,7 +13,7 @@ from game import events
 class Fps(object):
     """Class to calculate the FPS that the game is running """
     
-    _fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the _fps 
+    __fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the __fps 
     
     def __init__(self):
         self.accumulated_time = 0
@@ -30,7 +30,7 @@ class Fps(object):
         self._time_on_current_frame = difference
         self.accumulated_time += difference
         if self.accumulated_time >= 1:
-            self._fps = self.frames / self.accumulated_time
+            self.__fps = self.frames / self.accumulated_time
             self.frames = 0
             self.accumulated_time = 0
     
@@ -39,31 +39,31 @@ class GameTicks(object):
     MAX_GAME_TICKS = 120
     
     def __init__(self, fps):
-        self._game_tick = 0
-        self._fps = fps
-        self._calculate()
+        self.__game_tick = 0
+        self.__fps = fps
+        self.__calculate()
         
-    def _calculate(self):
+    def __calculate(self):
         self.MAX_FPS = 1000 / self.MAX_GAME_TICKS
         
     def update(self):
-        self._fps.update()
-        self._game_tick += 1
+        self.__fps.update()
+        self.__game_tick += 1
         
         #HACK: remove this sleep thing, it is here only for testing
-        current_frame_time = self._fps._time_on_current_frame
+        current_frame_time = self.__fps._time_on_current_frame
         if current_frame_time < self.MAX_FPS:
             sleep_time_inMS = self.MAX_FPS - current_frame_time
             time.sleep(sleep_time_inMS / 1000)
     
     @property
     def tick(self):
-        return self._game_tick
+        return self.__game_tick
     
     @property
     def fps(self):
         #HACK [edison]: must remove this, should not rely on this kind of behaviour
-        return self._fps._fps
+        return self.__fps.__fps
 
 class Battleships(object):
     """ The main class of the game. It glues everything together """
@@ -72,17 +72,17 @@ class Battleships(object):
         
         pygame.init()
         
-        self._event_manager = events.EventManager()
-        self._fps = Fps()
-        self._ticks = GameTicks(self._fps)
+        self.__event_manager = events.EventManager()
+        self.__fps = Fps()
+        self.__ticks = GameTicks(self.__fps)
         
-        camera = gui.camera.FreeCamera(self._event_manager, self._ticks)
-        self._view = gui.windows.MainWindow(camera)
-        self._view.add_object(gui.objects.Board())
+        camera = gui.camera.FreeCamera(self.__event_manager, self.__ticks)
+        self.__view = gui.windows.MainWindow(camera)
+        self.__view.add_object(gui.objects.Board())
         
     def handleEvent(self, event):
         if event.type == KEYDOWN or event.type == KEYUP:
-            self._event_manager.Post(events.KeyboardEvent(event.type, event.key))
+            self.__event_manager.Post(events.KeyboardEvent(event.type, event.key))
 
     def main_loop(self):
         while not self.is_finished:
@@ -92,7 +92,7 @@ class Battleships(object):
             
             self.handleEvent(event)
             
-            self._view.show_fps(self._fps._fps)
-            self._view.render()
+            self.__view.show_fps(self.__fps.__fps)
+            self.__view.render()
             
-            self._ticks.update()
+            self.__ticks.update()

@@ -24,7 +24,7 @@ class FreeCamera(object):
         self.x = 0
         self.y = 0
         self.z = 0
-        self._game_tick = gameTick
+        self.__game_tick = gameTick
     
         eventDispatcher.RegisterListener(self)
         
@@ -44,11 +44,11 @@ class FreeCamera(object):
                 self.is_strafing_right = is_starting
                 
             if event.key == pygame.K_F1:
-                self._game_tick.MAX_FPS += 1
-                self._game_tick._calculate()
+                self.__game_tick.MAX_FPS += 1
+                self.__game_tick.__calculate()
             if event.key == pygame.K_F2:
-                self._game_tick.MAX_FPS -= 1
-                self._game_tick._calculate()
+                self.__game_tick.MAX_FPS -= 1
+                self.__game_tick.__calculate()
             
     def render(self):
         if self.is_moving_forward:
@@ -66,4 +66,4 @@ class FreeCamera(object):
         glTranslatef(self.x, self.y, self.z)
 
     def _normalize(self, speed):
-        return speed / self._game_tick.fps
+        return speed / self.__game_tick.fps
