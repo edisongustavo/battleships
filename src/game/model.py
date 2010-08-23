@@ -3,12 +3,12 @@ Created on Jan 21, 2010
 
 @author: victorhg
 '''
-class Position():
+class Position(object):
     def __init__(self, row, column):
         self.row = row
         self.column = column
 
-class Board:
+class Board(object):
     def __init__(self, numRows, numColumns):
         self.numRows = numRows
         self.numColumns = numColumns

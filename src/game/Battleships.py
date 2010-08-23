@@ -13,13 +13,13 @@ from game import events
 class Fps(object):
     """Class to calculate the FPS that the game is running """
     
-    __fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the __fps 
-    
     def __init__(self):
         self.accumulated_time = 0
         self.frames = 0
         self._time_on_current_frame = 0
         self.time = time.time()
+        
+        self.fps = 120 #doesnt start with 0 because the user might want to start using the camera before being able to measure the __fps 
     
     def update(self):
         previous_time = self.time
@@ -30,7 +30,7 @@ class Fps(object):
         self._time_on_current_frame = difference
         self.accumulated_time += difference
         if self.accumulated_time >= 1:
-            self.__fps = self.frames / self.accumulated_time
+            self.fps = self.frames / self.accumulated_time
             self.frames = 0
             self.accumulated_time = 0
     
@@ -63,7 +63,7 @@ class GameTicks(object):
     @property
     def fps(self):
         #HACK [edison]: must remove this, should not rely on this kind of behaviour
-        return self.__fps.__fps
+        return self.__fps.fps
 
 class Battleships(object):
     """ The main class of the game. It glues everything together """
@@ -92,7 +92,7 @@ class Battleships(object):
             
             self.handleEvent(event)
             
-            self.__view.show_fps(self.__fps.__fps)
+            self.__view.show_fps(self.__fps.fps)
             self.__view.render()
             
             self.__ticks.update()
