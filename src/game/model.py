@@ -48,7 +48,7 @@ class Board(object):
         return strPrint
     
     def setBoatPosition(self, position):
-        self.positions[self.convertToIndex(position.row, position.column)] = True;
+        self.positions[self.convertToIndex(position.row, position.column)] = True
         
     def convertToIndex(self, row, column):
         return (row * self.numColumns) + column

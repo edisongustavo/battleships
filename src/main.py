@@ -8,6 +8,6 @@ from game.battleships import Battleships
 
 if __name__ == '__main__':
     app = Battleships()
-    app.main_loop();
+    app.main_loop()
 
 #    GameServer().start()

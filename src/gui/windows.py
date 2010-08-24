@@ -3,9 +3,10 @@ Created on 09/09/2009
 
 @author: emuenz
 '''
-from OpenGL.GL import *
-from OpenGL.GLU import *
-import gui.objects
+from OpenGL.raw.GL import glViewport, glMatrixMode, glLoadIdentity, glShadeModel, glClearColor, glClearDepth, glEnable, glDepthFunc, glHint, glClear
+from OpenGL.raw.GL.constants import GL_PROJECTION, GL_MODELVIEW, GL_SMOOTH, GL_DEPTH_TEST, GL_TEXTURE_2D, GL_LEQUAL, GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT
+from OpenGL.raw.GLU import gluPerspective
+from pygame.locals import OPENGL, DOUBLEBUF
 import pygame
 
 class MainWindow():
@@ -14,14 +15,14 @@ class MainWindow():
         self.__objects = []
         self.__camera = camera
 
-        self.__pygame_display = pygame.display;
-        self.__pygame_display.set_mode((640, 480), pygame.locals.OPENGL | pygame.locals.DOUBLEBUF)
+        self.__pygame_display = pygame.display
+        self.__pygame_display.set_mode((640, 480), OPENGL | DOUBLEBUF)
         
         self.__window_resize((640, 480))
         self.__init_openGL()
         
     def add_object(self, object):
-        self.__objects.append(gui.objects.Board())
+        self.__objects.append(object)
         
     def __window_resize(self, (width, height)):
         glViewport(0, 0, width, height)

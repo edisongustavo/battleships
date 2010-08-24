@@ -3,12 +3,12 @@ Created on 09/09/2009
 
 @author: emuenz
 '''
-from pygame.locals import *
 import gui.camera
 import gui.windows
 import pygame
 import time
 from game import events
+import gui.objects
 
 class Fps(object):
     """Class to calculate the FPS that the game is running """
@@ -33,12 +33,13 @@ class Fps(object):
             self.fps = self.frames / self.accumulated_time
             self.frames = 0
             self.accumulated_time = 0
-    
+
+#TODO this class needs a refactor. It's too confusing now
 class GameTicks(object):
     """ Class the handle the current tick of the game """
-    MAX_GAME_TICKS = 120
     
     def __init__(self, fps):
+        self.MAX_GAME_TICKS = 120
         self.__game_tick = 0
         self.__fps = fps
         self.__calculate()
@@ -81,13 +82,13 @@ class Battleships(object):
         self.__view.add_object(gui.objects.Board())
         
     def handleEvent(self, event):
-        if event.type == KEYDOWN or event.type == KEYUP:
+        if event.type == pygame.locals.KEYDOWN or event.type == pygame.locals.KEYUP:
             self.__event_manager.Post(events.KeyboardEvent(event.type, event.key))
 
     def main_loop(self):
         while not self.is_finished:
             event = pygame.event.poll()
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+            if event.type == pygame.locals.QUIT or (event.type == pygame.locals.KEYDOWN and event.key == pygame.locals.K_ESCAPE):
                 break
             
             self.handleEvent(event)
